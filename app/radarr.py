@@ -35,51 +35,6 @@ logging.basicConfig(
     ],
 )
 
-#def get_hardlink_count(file_path):
-#    """Get the hardlink count of the file."""
-#    try:
-#        return os.stat(file_path).st_nlink
-#    except FileNotFoundError:
-#        logging.warning(f"File not found: {file_path}")
-#        return 0
-
-#def get_hardlink_paths(file_path):
-#    """Get all hardlink paths for the file."""
-#    try:
-#        inode = os.stat(file_path).st_ino
-#        device = os.stat(file_path).st_dev
-#        directory = os.path.dirname(file_path)
-#
-#        # Use find to locate files with the same inode and device
-#        result = subprocess.run(
-#            ["find", directory, "-inum", str(inode), "-samefile", file_path],
-#            capture_output=True,
-#            text=True,
-#        )
-#        if result.returncode != 0:
-#            logging.warning(f"Could not retrieve hardlinks for {file_path}. Error: {result.stderr.strip()}")
-#            return []
-#
-#        return result.stdout.strip().split("\n")
-#    except Exception as e:
-#        logging.error(f"Error getting hardlinks for {file_path}: {e}")
-#        return []
-
-# TODO - can this be improved with the find command from above?
-#def find_hardlinked_files(file_path):
-#    """Find all other files with the same inode (hardlinks)."""
-#    inode = os.stat(file_path).st_ino
-#    hardlinked_files = []
-#
-#    # Walk the file system and check all files (can be optimized for specific directories)
-#    for root, _, files in os.walk(SEEDING_DIR):
-#        for file in files:
-#            full_path = os.path.join(root, file)
-#            if os.stat(full_path).st_ino == inode and full_path != file_path:
-#                hardlinked_files.append(full_path)
-#
-#    return hardlinked_files
-
 def get_movies():
     """Fetch all movies from Radarr."""
     headers = {"X-Api-Key": RADARR_API_KEY}
@@ -110,18 +65,6 @@ def get_or_create_tag(tag_name):
 
     return tag_id
 
-# TODO - remove
-#def get_tag_id(tag_name):
-#    """Fetch the tag ID for the given tag name."""
-#    headers = {"X-Api-Key": RADARR_API_KEY}
-#    response = requests.get(TAG_API_URL, headers=headers)
-#    response.raise_for_status()
-#    for tag in response.json():
-#        if tag["label"].lower() == tag_name.lower():
-#            return tag["id"]
-#    return None
-# TODO - remove end
-
 def is_tag_set_on_movie(movie_id, tag_id):
     """Is the tag already set on this movie?"""
     # Fetch the current movie details to check existing tags
@@ -146,15 +89,6 @@ def modify_tag(movie_id, tag_id, add=True):
     #    requests.delete(f"{MOVIE_API_URL}/{movie_id}/tag/{tag_id}", headers=headers).raise_for_status()
     #    logging.info(f"Removed tag '{SEEDING_TAG_NAME}' from movie ID {movie_id}.")
     logging.info(f"Called modify_tag for movie {movie_id}, with add {add}")
-
-#def is_file_seeding(file_path):
-#    """Check if the file has hardlinks in the specified directory."""
-#    try:
-#        hardlinks = [str(p) for p in Path(file_path).parent.glob("*") if p.is_file()]
-#        return any(SEEDING_DIR in h for h in hardlinks)
-#    except Exception as e:
-#        logging.error(f"Error checking hardlinks for {file_path}: {e}")
-#        return False
 
 def process_movies():
     """Process all movies in Radarr."""

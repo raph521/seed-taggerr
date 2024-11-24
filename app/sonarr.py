@@ -73,16 +73,6 @@ def get_or_create_tag(tag_name):
 
     return tag_id
 
-#def get_tag_id(tag_name):
-#    """Fetch the tag ID for the given tag name."""
-#    headers = {"X-Api-Key": SONARR_API_KEY}
-#    response = requests.get(TAG_API_URL, headers=headers)
-#    response.raise_for_status()
-#    for tag in response.json():
-#        if tag["label"].lower() == tag_name.lower():
-#            return tag["id"]
-#    return None
-
 def is_tag_set_on_series(series_id, tag_id):
     """Is the tag already set on this series?"""
     # Fetch the series details to check existing tags
@@ -107,15 +97,6 @@ def modify_tag(series_id, tag_id, add=True):
     #    requests.delete(f"{SERIES_API_URL}/{series_id}/tag/{tag_id}", headers=headers).raise_for_status()
     #    logging.info(f"Removed tag '{SEEDING_TAG_NAME}' from series ID {series_id}.")
     logging.info(f"Called modify_tag for series {series_id}, with add {add}")
-
-#def is_file_seeding(file_path):
-#    """Check if the file has hardlinks in the specified directory."""
-#    try:
-#        hardlinks = [str(p) for p in Path(file_path).parent.glob("*") if p.is_file()]
-#        return any(SEEDING_DIR in h for h in hardlinks)
-#    except Exception as e:
-#        logging.error(f"Error checking hardlinks for {file_path}: {e}")
-#        return False
 
 def process_series():
     """Process all series in Sonarr."""
