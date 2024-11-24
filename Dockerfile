@@ -2,10 +2,21 @@
 
 FROM python:3.11-alpine
 
-# Default to running every day at midnight
-ENV CRON_SCHEDULE="0 0 * * *"
-ENV TZ="America/New_York"
-
+# Supported runtime environment variables
+# - PUID
+# - PGID
+# - TZ
+# - CRON_SCHEDULE_RADARR
+# - CRON_SCHEDULE_SONARR
+# - RADARR_URL
+# - RADARR_API_KEY
+# - SONARR_URL
+# - SONARR_API_KEY
+# - SEEDING_DIR
+# - SEEDING_TAG_NAME
+# - LOG_DIR
+# - LOG_MAX_SIZE
+# - LOG_BACKUP_COUNT
 
 #RUN echo "*** Installing dependencies ***" && \
 #    apk --no-cache add jq curl bash tzdata file
@@ -13,6 +24,7 @@ ENV TZ="America/New_York"
 # Install required system dependencies
 RUN echo "*** Installing dependencies ***" && \
     apk add --no-cache \
+        tzdata \
         gcc \
         bash \
         musl-dev \
@@ -20,27 +32,21 @@ RUN echo "*** Installing dependencies ***" && \
         python3-dev \
         openssl-dev
 
+# Specify bash as the default shell
+SHELL ["/bin/bash", "-c"]
+
 # Create and set working directory
 WORKDIR /app
 
 # Copy script and requirements
 RUN echo "*** Installing app scripts ***"
-COPY *.sh /app/
-COPY *.py /app/
+COPY app/*.sh /app/
+COPY app/*.py /app/
+RUN chmod +x /app/entrypoint.sh
 COPY requirements.txt /app/
-
-#WORKDIR /discord-sh
-#RUN echo "*** Installing fieu/discord.sh ***" && \
-#    wget https://github.com/fieu/discord.sh/releases/latest/download/discord.sh && \
-#    chmod +x discord.sh
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
-
-#WORKDIR /
-
-# Specify bash as the default shell
-SHELL ["/bin/bash", "-c"]
 
 CMD ["/app/entrypoint.sh"]
 
