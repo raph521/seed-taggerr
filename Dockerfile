@@ -15,6 +15,7 @@ FROM python:3.11-alpine
 # - SEEDING_DIR
 # - SEEDING_TAG_NAME
 # - LOG_DIR
+# - LOG_LEVEL
 # - LOG_MAX_SIZE
 # - LOG_BACKUP_COUNT
 

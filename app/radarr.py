@@ -3,7 +3,7 @@ import requests
 import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from common_utils import is_file_seeding
+from common_utils import is_file_seeding, get_log_level
 
 # Environment variables for Radarr
 RADARR_URL = os.getenv("RADARR_URL", "http://radarr:7878")
@@ -23,11 +23,10 @@ TAG_API_URL = f"{RADARR_URL}/api/v3/tag"
 log_handler = RotatingFileHandler(
     f"{LOG_DIR}/radarr.log", maxBytes=LOG_MAX_SIZE, backupCount=LOG_BACKUP_COUNT
 )
-#log_handler.setLevel(logging.INFO)
 
 # Set up logging
 logging.basicConfig(
-    level=logging.INFO,
+    level=get_log_level(),
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
         log_handler,
@@ -103,7 +102,7 @@ def process_movies():
             movie_file_path = movie.get("movieFile", {}).get("path")
 
             if not movie_file_path:
-                logging.info(f"No movie file found for movie ID {movie_id}. Skipping.")
+                logging.debug(f"No movie file found for movie ID {movie_id}. Skipping.")
                 continue
 
             if is_file_seeding(movie_file_path):

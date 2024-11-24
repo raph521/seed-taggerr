@@ -3,7 +3,7 @@ import requests
 import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from common_utils import is_file_seeding
+from common_utils import is_file_seeding, get_log_level
 
 # Environment variables for Sonarr
 SONARR_URL = os.getenv("SONARR_URL", "http://sonarr:8989")
@@ -24,11 +24,10 @@ TAG_API_URL = f"{SONARR_URL}/api/v3/tag"
 log_handler = RotatingFileHandler(
     f"{LOG_DIR}/sonarr.log", maxBytes=LOG_MAX_SIZE, backupCount=LOG_BACKUP_COUNT
 )
-#log_handler.setLevel(logging.INFO)
 
 # Set up logging
 logging.basicConfig(
-    level=logging.INFO,
+    level=get_log_level(),
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
         log_handler,
