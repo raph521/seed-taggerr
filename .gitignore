@@ -1,0 +1,13 @@
+# Python-related
+*.pyc
+__pycache__/
+
+# Logs
+logs/
+*.log
+
+# Environment files
+.env
+
+# Docker-related
+*.dockerignore
