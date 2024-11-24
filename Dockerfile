@@ -18,19 +18,11 @@ FROM python:3.11-alpine
 # - LOG_MAX_SIZE
 # - LOG_BACKUP_COUNT
 
-#RUN echo "*** Installing dependencies ***" && \
-#    apk --no-cache add jq curl bash tzdata file
-
 # Install required system dependencies
 RUN echo "*** Installing dependencies ***" && \
     apk add --no-cache \
-        tzdata \
-        gcc \
         bash \
-        musl-dev \
-        libffi-dev \
-        python3-dev \
-        openssl-dev
+        tzdata
 
 # Specify bash as the default shell
 SHELL ["/bin/bash", "-c"]
@@ -49,6 +41,3 @@ COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 CMD ["/app/entrypoint.sh"]
-
-# Command to run the script
-#CMD ["python", "/app/script.py"]
