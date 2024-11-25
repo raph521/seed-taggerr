@@ -2,7 +2,6 @@ import os
 import requests
 import logging
 from logging.handlers import RotatingFileHandler
-from pathlib import Path
 from common_utils import is_file_seeding, get_log_level
 
 # Environment variables for Radarr
@@ -11,8 +10,12 @@ RADARR_API_KEY = os.getenv("RADARR_API_KEY", "your_api_key")
 SEEDING_DIR = os.getenv("SEEDING_DIR", "/data/downloads/qbittorrent/seed")
 SEEDING_TAG_NAME = os.getenv("SEEDING_TAG_NAME", "seeding")
 # Environment variables for logging
-LOG_MAX_SIZE = int(os.getenv("LOG_MAX_SIZE", 10 * 1024 * 1024))  # Default: 10 MB
-LOG_BACKUP_COUNT = int(os.getenv("LOG_BACKUP_COUNT", 5))  # Default: 5 backup files
+LOG_MAX_SIZE = int(
+    os.getenv("LOG_MAX_SIZE", 10 * 1024 * 1024)
+)  # Default: 10 MB
+LOG_BACKUP_COUNT = int(
+    os.getenv("LOG_BACKUP_COUNT", 5)
+)  # Default: 5 backup files
 LOG_DIR = os.getenv("LOG_DIR", "/logs")
 
 # Radarr API endpoints
@@ -30,9 +33,10 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
         log_handler,
-        logging.StreamHandler()  # Optional: Keep this for debugging in container logs
+        logging.StreamHandler(),  # Optional: Keep this for debugging in container logs
     ],
 )
+
 
 def get_movies():
     """Fetch all movies from Radarr."""
@@ -40,6 +44,7 @@ def get_movies():
     response = requests.get(MOVIE_API_URL, headers=headers)
     response.raise_for_status()
     return response.json()
+
 
 def get_or_create_tag(tag_name):
     """Retrieve the tag ID for a given tag name, creating it if it doesn't exist."""
@@ -64,6 +69,7 @@ def get_or_create_tag(tag_name):
 
     return tag_id
 
+
 def is_tag_set_on_movie(movie_id, tag_id):
     """Is the tag already set on this movie?"""
     # Fetch the current movie details to check existing tags
@@ -78,16 +84,18 @@ def is_tag_set_on_movie(movie_id, tag_id):
         return True
     return False
 
+
 def modify_tag(movie_id, tag_id, add=True):
     """Add or remove a tag from a movie."""
-    #headers = {"X-Api-Key": RADARR_API_KEY}
-    #if add:
+    # headers = {"X-Api-Key": RADARR_API_KEY}
+    # if add:
     #    requests.post(f"{MOVIE_API_URL}/{movie_id}/tag", json={"tagIds": [tag_id]}, headers=headers).raise_for_status()
     #    logging.info(f"Added tag '{SEEDING_TAG_NAME}' to movie ID {movie_id}.")
-    #else:
+    # else:
     #    requests.delete(f"{MOVIE_API_URL}/{movie_id}/tag/{tag_id}", headers=headers).raise_for_status()
     #    logging.info(f"Removed tag '{SEEDING_TAG_NAME}' from movie ID {movie_id}.")
     logging.info(f"Called modify_tag for movie {movie_id}, with add {add}")
+
 
 def process_movies():
     """Process all movies in Radarr."""
@@ -102,24 +110,33 @@ def process_movies():
             movie_file_path = movie.get("movieFile", {}).get("path")
 
             if not movie_file_path:
-                logging.debug(f"No movie file found for movie ID {movie_id}. Skipping.")
+                logging.debug(
+                    f"No movie file found for movie ID {movie_id}. Skipping."
+                )
                 continue
 
             if is_file_seeding(movie_file_path):
                 if not is_tag_set_on_movie(movie_id, seeding_tag_id):
-                    logging.info(f"Adding {SEEDING_TAG_NAME} to {movie['title']} (ID: {movie_id})")
+                    logging.info(
+                        f"Adding {SEEDING_TAG_NAME} to {movie['title']} (ID: {movie_id})"
+                    )
                     modify_tag(movie_id, seeding_tag_id, add=True)
                 else:
-                    logging.info(f"{SEEDING_TAG_NAME} already set on {movie['title']} (ID: {movie_id})")
+                    logging.info(
+                        f"{SEEDING_TAG_NAME} already set on {movie['title']} (ID: {movie_id})"
+                    )
             else:
                 if is_tag_set_on_movie(movie_id, seeding_tag_id):
-                    logging.info(f"Removing {SEEDING_TAG_NAME} from {movie['title']} (ID: {movie_id})")
+                    logging.info(
+                        f"Removing {SEEDING_TAG_NAME} from {movie['title']} (ID: {movie_id})"
+                    )
                     modify_tag(movie_id, seeding_tag_id, add=False)
 
     except requests.RequestException as e:
         logging.error(f"Error interacting with Radarr API: {e}")
     except Exception as e:
         logging.error(f"Unexpected error: {e}")
+
 
 if __name__ == "__main__":
     logging.info("Starting Radarr seeding check...")
