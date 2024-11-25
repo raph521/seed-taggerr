@@ -118,17 +118,20 @@ def process_movies():
             if is_file_seeding(movie_file_path):
                 if not is_tag_set_on_movie(movie_id, seeding_tag_id):
                     logging.info(
-                        f"Adding {SEEDING_TAG_NAME} to {movie['title']} (ID: {movie_id})"
+                        f"Adding {SEEDING_TAG_NAME} to {movie['title']} "
+                        f"(ID: {movie_id})"
                     )
                     modify_tag(movie_id, seeding_tag_id, add=True)
                 else:
                     logging.info(
-                        f"{SEEDING_TAG_NAME} already set on {movie['title']} (ID: {movie_id})"
+                        f"{SEEDING_TAG_NAME} already set on {movie['title']} "
+                        f"(ID: {movie_id})"
                     )
             else:
                 if is_tag_set_on_movie(movie_id, seeding_tag_id):
                     logging.info(
-                        f"Removing {SEEDING_TAG_NAME} from {movie['title']} (ID: {movie_id})"
+                        f"Removing {SEEDING_TAG_NAME} from {movie['title']} "
+                        f"(ID: {movie_id})"
                     )
                     modify_tag(movie_id, seeding_tag_id, add=False)
 

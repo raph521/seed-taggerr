@@ -132,17 +132,20 @@ def process_series():
             if seeding_found:
                 if not is_tag_set_on_series(series_id, seeding_tag_id):
                     logging.info(
-                        f"Adding {SEEDING_TAG_NAME} to {series_title} (ID: {series_id})"
+                        f"Adding {SEEDING_TAG_NAME} to {series_title} "
+                        f"(ID: {series_id})"
                     )
                     modify_tag(series_id, seeding_tag_id, add=True)
                 else:
                     logging.info(
-                        f"{SEEDING_TAG_NAME} already set on {series_title} (ID: {series_id})"
+                        f"{SEEDING_TAG_NAME} already set on {series_title} "
+                        f"(ID: {series_id})"
                     )
             else:
                 if is_tag_set_on_series(series_id, seeding_tag_id):
                     logging.info(
-                        f"Removing {SEEDING_TAG_NAME} from {series_title} (ID: {series_id})"
+                        f"Removing {SEEDING_TAG_NAME} from {series_title} "
+                        f"(ID: {series_id})"
                     )
                     modify_tag(series_id, seeding_tag_id, add=False)
 

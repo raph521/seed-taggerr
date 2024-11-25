@@ -22,7 +22,8 @@ def get_log_level():
 
     if log_level_name not in LOG_LEVELS:
         print(
-            f"Invalid LOG_LEVEL '{log_level_name}' provided. Defaulting to INFO."
+            f"Invalid LOG_LEVEL '{log_level_name}' provided. Defaulting to "
+            f"INFO."
         )
 
     return log_level
