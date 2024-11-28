@@ -43,7 +43,8 @@ def find_hardlinked_files(file_path: str) -> list[str]:
     inode = os.stat(file_path).st_ino
     hardlinked_files = []
 
-    # Walk the file system and check all files (can be optimized for specific directories)
+    # Walk the file system and check all files (can be optimized for specific
+    # directories)
     for root, _, files in os.walk(SEEDING_DIR):
         for file in files:
             full_path = os.path.join(root, file)

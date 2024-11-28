@@ -33,9 +33,10 @@ log_handler = RotatingFileHandler(
 logging.basicConfig(
     level=get_log_level(),
     format="%(asctime)s - %(levelname)s - %(message)s",
+    # Optional: Keep logging.StreamHandler() for debugging in container logs
     handlers=[
         log_handler,
-        logging.StreamHandler(),  # Optional: Keep this for debugging in container logs
+        logging.StreamHandler(),
     ],
 )
 
@@ -62,7 +63,7 @@ def get_episode_files(series_id: str) -> List[Dict[str, Any]]:
 
 
 def get_or_create_tag(tag_name: str) -> Any:
-    """Retrieve the tag ID for a given tag name, creating it if it doesn't exist."""
+    """Retrieve tag ID for given tag name, creating it if it doesn't exist."""
     headers = {"X-Api-Key": SONARR_API_KEY}
 
     # Fetch existing tags
@@ -102,13 +103,23 @@ def is_tag_set_on_series(series_id: str, tag_id: str) -> bool:
 
 def modify_tag(series_id: str, tag_id: str, add: bool = True) -> None:
     """Add or remove a tag from a series."""
-    headers = {"X-Api-Key": SONARR_API_KEY}
+    # headers = {"X-Api-Key": SONARR_API_KEY}
     # if add:
-    #    requests.post(f"{SERIES_API_URL}/{series_id}/tag", json={"tagIds": [tag_id]}, headers=headers).raise_for_status()
-    #    logging.info(f"Added tag '{SEEDING_TAG_NAME}' to series ID {series_id}.")
+    #     requests.post(
+    #         f"{SERIES_API_URL}/{series_id}/tag",
+    #         json={"tagIds": [tag_id]},
+    #         headers=headers,
+    #     ).raise_for_status()
+    #     logging.info(
+    #         f"Added tag '{SEEDING_TAG_NAME}' to series ID {series_id}."
+    #     )
     # else:
-    #    requests.delete(f"{SERIES_API_URL}/{series_id}/tag/{tag_id}", headers=headers).raise_for_status()
-    #    logging.info(f"Removed tag '{SEEDING_TAG_NAME}' from series ID {series_id}.")
+    #     requests.delete(
+    #         f"{SERIES_API_URL}/{series_id}/tag/{tag_id}", headers=headers
+    #     ).raise_for_status()
+    #     logging.info(
+    #         f"Removed tag '{SEEDING_TAG_NAME}' from series ID {series_id}."
+    #     )
     logging.info(f"Called modify_tag for series {series_id}, with add {add}")
 
 
@@ -141,7 +152,7 @@ def process_series() -> None:
                     )
                     modify_tag(series_id, seeding_tag_id, add=True)
                 else:
-                    logging.info(
+                    logging.debug(
                         f"{SEEDING_TAG_NAME} already set on {series_title} "
                         f"(ID: {series_id})"
                     )

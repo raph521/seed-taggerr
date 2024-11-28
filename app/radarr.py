@@ -32,9 +32,10 @@ log_handler = RotatingFileHandler(
 logging.basicConfig(
     level=get_log_level(),
     format="%(asctime)s - %(levelname)s - %(message)s",
+    # Optional: Keep logging.StreamHandler() for debugging in container logs
     handlers=[
         log_handler,
-        logging.StreamHandler(),  # Optional: Keep this for debugging in container logs
+        logging.StreamHandler(),
     ],
 )
 
@@ -50,7 +51,7 @@ def get_movies() -> List[Dict[str, Any]]:
 
 
 def get_or_create_tag(tag_name: str) -> Any:
-    """Retrieve the tag ID for a given tag name, creating it if it doesn't exist."""
+    """Retrieve tag ID for given tag name, creating it if it doesn't exist."""
     headers = {"X-Api-Key": RADARR_API_KEY}
 
     # Fetch existing tags
@@ -92,11 +93,20 @@ def modify_tag(movie_id: str, tag_id: str, add: bool = True) -> None:
     """Add or remove a tag from a movie."""
     # headers = {"X-Api-Key": RADARR_API_KEY}
     # if add:
-    #    requests.post(f"{MOVIE_API_URL}/{movie_id}/tag", json={"tagIds": [tag_id]}, headers=headers).raise_for_status()
-    #    logging.info(f"Added tag '{SEEDING_TAG_NAME}' to movie ID {movie_id}.")
+    #     requests.post(
+    #         f"{MOVIE_API_URL}/{movie_id}/tag",
+    #         json={"tagIds": [tag_id]},
+    #         headers=headers,
+    #     ).raise_for_status()
+    #     logging.debug(
+    #         f"Added tag '{SEEDING_TAG_NAME}' to movie ID {movie_id}.")
     # else:
-    #    requests.delete(f"{MOVIE_API_URL}/{movie_id}/tag/{tag_id}", headers=headers).raise_for_status()
-    #    logging.info(f"Removed tag '{SEEDING_TAG_NAME}' from movie ID {movie_id}.")
+    #     requests.delete(
+    #         f"{MOVIE_API_URL}/{movie_id}/tag/{tag_id}", headers=headers
+    #     ).raise_for_status()
+    #     logging.debug(
+    #         f"Removed tag '{SEEDING_TAG_NAME}' from movie ID {movie_id}."
+    #     )
     logging.info(f"Called modify_tag for movie {movie_id}, with add {add}")
 
 
@@ -126,7 +136,7 @@ def process_movies() -> None:
                     )
                     modify_tag(movie_id, seeding_tag_id, add=True)
                 else:
-                    logging.info(
+                    logging.debug(
                         f"{SEEDING_TAG_NAME} already set on {movie['title']} "
                         f"(ID: {movie_id})"
                     )
