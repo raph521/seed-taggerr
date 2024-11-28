@@ -37,8 +37,8 @@ fi
 # Adjust permissions for the log directory
 echo "Setting permissions for log directory..."
 LOG_DIR=${LOG_DIR:-"/logs"}
-mkdir -p $LOG_DIR
-chown -R "$USER_NAME":"$GROUP_NAME" $LOG_DIR
+mkdir -p "$LOG_DIR"
+chown -R "$USER_NAME":"$GROUP_NAME" "$LOG_DIR"
 
 # Environment variables
 CRON_SCHEDULE_RADARR=${CRON_SCHEDULE_RADARR:-"0 0 * * *"}  # Default: Run every day
@@ -46,10 +46,10 @@ CRON_SCHEDULE_SONARR=${CRON_SCHEDULE_SONARR:-"30 0 * * *"} # Default: Run every 
 
 # Immediate first run
 echo "Running Radarr script for the first time..."
-su $USER_NAME -c 'python3 /app/radarr.py'
+su "$USER_NAME" -c 'python3 /app/radarr.py'
 
 echo "Running Sonarr script for the first time..."
-su $USER_NAME -c 'python3 /app/sonarr.py'
+su "$USER_NAME" -c 'python3 /app/sonarr.py'
 
 # Create cron jobs
 echo "Setting up cron jobs..."
