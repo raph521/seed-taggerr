@@ -4,7 +4,7 @@ import logging
 SEEDING_DIR = os.getenv("SEEDING_DIR", "/data/downloads/qbittorrent/seed")
 
 
-def get_log_level():
+def get_log_level() -> int:
     # Map log level strings to logging constants
     LOG_LEVELS = {
         "DEBUG": logging.DEBUG,
@@ -29,7 +29,7 @@ def get_log_level():
     return log_level
 
 
-def get_hardlink_count(file_path):
+def get_hardlink_count(file_path: str) -> int:
     """Get the hardlink count of the file."""
     try:
         return os.stat(file_path).st_nlink
@@ -38,7 +38,7 @@ def get_hardlink_count(file_path):
         return 0
 
 
-def find_hardlinked_files(file_path):
+def find_hardlinked_files(file_path: str) -> list[str]:
     """Find all other files with the same inode (hardlinks)."""
     inode = os.stat(file_path).st_ino
     hardlinked_files = []
@@ -53,7 +53,7 @@ def find_hardlinked_files(file_path):
     return hardlinked_files
 
 
-def is_file_seeding(file_path):
+def is_file_seeding(file_path: str) -> bool:
     """Check if this file has a hardlink in the seeding directory."""
     if get_hardlink_count(file_path) == 1:
         return False

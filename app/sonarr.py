@@ -3,6 +3,7 @@ import requests
 import logging
 from logging.handlers import RotatingFileHandler
 from common_utils import is_file_seeding, get_log_level
+from typing import List, Dict, Any
 
 # Environment variables for Sonarr
 SONARR_URL = os.getenv("SONARR_URL", "http://sonarr:8989")
@@ -39,25 +40,28 @@ logging.basicConfig(
 )
 
 
-def get_series():
+def get_series() -> List[Dict[str, Any]]:
     """Fetch all series from Sonarr."""
     headers = {"X-Api-Key": SONARR_API_KEY}
     response = requests.get(SERIES_API_URL, headers=headers)
     response.raise_for_status()
-    return response.json()
+    # Cast the response to the expected type
+    series: List[Dict[str, Any]] = response.json()
+    return series
 
 
-def get_episode_files(series_id):
+def get_episode_files(series_id: str) -> List[Dict[str, Any]]:
     """Fetch all episode files for a series."""
     headers = {"X-Api-Key": SONARR_API_KEY}
     response = requests.get(
         f"{EPISODE_FILE_API_URL}?seriesId={series_id}", headers=headers
     )
     response.raise_for_status()
-    return response.json()
+    files: List[Dict[str, Any]] = response.json()
+    return files
 
 
-def get_or_create_tag(tag_name):
+def get_or_create_tag(tag_name: str) -> Any:
     """Retrieve the tag ID for a given tag name, creating it if it doesn't exist."""
     headers = {"X-Api-Key": SONARR_API_KEY}
 
@@ -81,7 +85,7 @@ def get_or_create_tag(tag_name):
     return tag_id
 
 
-def is_tag_set_on_series(series_id, tag_id):
+def is_tag_set_on_series(series_id: str, tag_id: str) -> bool:
     """Is the tag already set on this series?"""
     # Fetch the series details to check existing tags
     headers = {"X-Api-Key": SONARR_API_KEY}
@@ -96,7 +100,7 @@ def is_tag_set_on_series(series_id, tag_id):
     return False
 
 
-def modify_tag(series_id, tag_id, add=True):
+def modify_tag(series_id: str, tag_id: str, add: bool = True) -> None:
     """Add or remove a tag from a series."""
     headers = {"X-Api-Key": SONARR_API_KEY}
     # if add:
@@ -108,7 +112,7 @@ def modify_tag(series_id, tag_id, add=True):
     logging.info(f"Called modify_tag for series {series_id}, with add {add}")
 
 
-def process_series():
+def process_series() -> None:
     """Process all series in Sonarr."""
     try:
         series_list = get_series()

@@ -3,6 +3,7 @@ import requests
 import logging
 from logging.handlers import RotatingFileHandler
 from common_utils import is_file_seeding, get_log_level
+from typing import List, Dict, Any
 
 # Environment variables for Radarr
 RADARR_URL = os.getenv("RADARR_URL", "http://radarr:7878")
@@ -38,15 +39,17 @@ logging.basicConfig(
 )
 
 
-def get_movies():
+def get_movies() -> List[Dict[str, Any]]:
     """Fetch all movies from Radarr."""
     headers = {"X-Api-Key": RADARR_API_KEY}
-    response = requests.get(MOVIE_API_URL, headers=headers)
+    response: requests.Response = requests.get(MOVIE_API_URL, headers=headers)
     response.raise_for_status()
-    return response.json()
+    # Cast the response to the expected type
+    movies: List[Dict[str, Any]] = response.json()
+    return movies
 
 
-def get_or_create_tag(tag_name):
+def get_or_create_tag(tag_name: str) -> Any:
     """Retrieve the tag ID for a given tag name, creating it if it doesn't exist."""
     headers = {"X-Api-Key": RADARR_API_KEY}
 
@@ -70,7 +73,7 @@ def get_or_create_tag(tag_name):
     return tag_id
 
 
-def is_tag_set_on_movie(movie_id, tag_id):
+def is_tag_set_on_movie(movie_id: str, tag_id: str) -> bool:
     """Is the tag already set on this movie?"""
     # Fetch the current movie details to check existing tags
     headers = {"X-Api-Key": RADARR_API_KEY}
@@ -85,7 +88,7 @@ def is_tag_set_on_movie(movie_id, tag_id):
     return False
 
 
-def modify_tag(movie_id, tag_id, add=True):
+def modify_tag(movie_id: str, tag_id: str, add: bool = True) -> None:
     """Add or remove a tag from a movie."""
     # headers = {"X-Api-Key": RADARR_API_KEY}
     # if add:
@@ -97,7 +100,7 @@ def modify_tag(movie_id, tag_id, add=True):
     logging.info(f"Called modify_tag for movie {movie_id}, with add {add}")
 
 
-def process_movies():
+def process_movies() -> None:
     """Process all movies in Radarr."""
     try:
         movies = get_movies()
