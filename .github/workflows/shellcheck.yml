@@ -1,4 +1,4 @@
-name: Lint with Ruff
+name: Lint with ShellCheck
 
 on:
   pull_request:
@@ -9,28 +9,22 @@ on:
       - 'main'
 
 jobs:
-  lint:
+  shellcheck:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
 
-      - name: Install dependencies (including Ruff)
+      - name: Install dependencies (including ShellCheck)
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Ruff linter
-        run: |
-          ruff check .  # Run Ruff on the current directory
-
-      - name: Upload Ruff results to GitHub actions
-        if: failure()
-        run: |
-          echo "Ruff linting failed."
+      - name: Run ShellCheck
+        run: shellcheck **/*.sh

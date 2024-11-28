@@ -9,7 +9,7 @@ on:
       - 'main'
 
 jobs:
-  type-check:
+  mypy:
     runs-on: ubuntu-latest
 
     steps:

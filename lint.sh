@@ -12,3 +12,4 @@ python3 -m pip install --no-cache-dir -r requirements.txt
 # Lint and type check
 ruff format app/*.py
 mypy app/*.py
+shellcheck app/*.sh
