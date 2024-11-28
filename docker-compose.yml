@@ -1,0 +1,35 @@
+services:
+  	seed-taggerr:
+  	  	container_name: seed-taggerr
+        restart: on-failure:5
+        image: ghcr.io/raph521/seed-taggerr:main
+        # Comment out "image" and use below to build image manually
+  	  	# build:
+        #     context: .
+  	  	#     dockerfile: Dockerfile
+        # Custom entrypoint for debugging
+  	  	# command: ["/app/entrypoint.sh"]
+        volumes:
+            # Mount the directory containing media files
+            # - should match the mapping in Radarr, Sonarr and the torrent client
+            - /mnt/user/data:/data:ro
+            # Mount the logs directory to persist log files
+            - ./logs:/logs
+        # Environment variables can be defined in an env file or directly in the
+        # "environment" block (or both)
+        # - see example in app/config/.env.example
+        env_file:
+            - path: ./seed-taggerr.env
+              required: true
+        environment:
+            - PUID=${PUID}
+            - PGID=${PGID}
+            - TZ=${TZ}
+        network:
+            # Network on which Radarr and Sonarr can be accessed
+            # - may need to be defined as external if services defined elsewhere
+            arr_network:
+
+networks:
+    arr_network:
+        external: true
