@@ -2,23 +2,6 @@
 
 FROM python:3.13-alpine
 
-# Supported runtime environment variables
-# - PUID
-# - PGID
-# - TZ
-# - CRON_SCHEDULE_RADARR
-# - CRON_SCHEDULE_SONARR
-# - RADARR_URL
-# - RADARR_API_KEY
-# - SONARR_URL
-# - SONARR_API_KEY
-# - SEEDING_DIR
-# - SEEDING_TAG_NAME
-# - LOG_DIR
-# - LOG_LEVEL
-# - LOG_MAX_SIZE
-# - LOG_BACKUP_COUNT
-
 # Install required system dependencies
 RUN echo "*** Installing dependencies ***" && \
     apk add --no-cache \
@@ -39,6 +22,6 @@ RUN chmod +x /app/entrypoint.sh
 COPY requirements.txt /app/
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --root-user-action=ignore --no-cache-dir -r requirements.txt
 
 CMD ["/app/entrypoint.sh"]
