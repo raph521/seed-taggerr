@@ -7,7 +7,7 @@ python3 -m venv env
 source env/bin/activate
 
 # Install dependencies
-python3 -m pip install --no-cache-dir -r requirements.txt
+python3 -m pip install --no-cache-dir -r dev-requirements.txt
 
 # Lint and type check
 ruff format app/*.py
