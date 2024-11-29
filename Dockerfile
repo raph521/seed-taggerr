@@ -22,6 +22,7 @@ RUN chmod +x /app/entrypoint.sh
 COPY requirements.txt /app/
 
 # Install Python dependencies
-RUN pip install --root-user-action=ignore --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip && \
+    pip install --root-user-action=ignore --no-cache-dir -r requirements.txt
 
 CMD ["/app/entrypoint.sh"]
