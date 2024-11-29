@@ -1,14 +1,14 @@
 services:
-  	seed-taggerr:
-  	  	container_name: seed-taggerr
+    seed-taggerr:
+        container_name: seed-taggerr
         restart: on-failure:5
         image: ghcr.io/raph521/seed-taggerr:main
         # Comment out "image" and use below to build image manually
-  	  	# build:
+        # build:
         #     context: .
-  	  	#     dockerfile: Dockerfile
+        #     dockerfile: Dockerfile
         # Custom entrypoint for debugging
-  	  	# command: ["/app/entrypoint.sh"]
+        # command: ["/app/entrypoint.sh"]
         volumes:
             # Mount the directory containing media files
             # - should match the mapping in Radarr, Sonarr and the torrent client
