@@ -13,3 +13,4 @@ python3 -m pip install --no-cache-dir -r requirements.txt
 ruff format app/*.py
 mypy app/*.py
 shellcheck app/*.sh
+hadolintw Dockerfile --ignore DL3018
