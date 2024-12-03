@@ -91,23 +91,21 @@ def is_tag_set_on_movie(movie_id: str, tag_id: str) -> bool:
 
 def modify_tag(movie_id: str, tag_id: str, add: bool = True) -> None:
     """Add or remove a tag from a movie."""
-    # headers = {"X-Api-Key": RADARR_API_KEY}
-    # if add:
-    #     requests.post(
-    #         f"{MOVIE_API_URL}/{movie_id}/tag",
-    #         json={"tagIds": [tag_id]},
-    #         headers=headers,
-    #     ).raise_for_status()
-    #     logging.debug(
-    #         f"Added tag '{SEEDING_TAG_NAME}' to movie ID {movie_id}.")
-    # else:
-    #     requests.delete(
-    #         f"{MOVIE_API_URL}/{movie_id}/tag/{tag_id}", headers=headers
-    #     ).raise_for_status()
-    #     logging.debug(
-    #         f"Removed tag '{SEEDING_TAG_NAME}' from movie ID {movie_id}."
-    #     )
-    logging.info(f"Called modify_tag for movie {movie_id}, with add {add}")
+    headers = {"X-Api-Key": RADARR_API_KEY}
+    if add:
+        requests.post(
+            f"{MOVIE_API_URL}/{movie_id}/tag",
+            json={"tagIds": [tag_id]},
+            headers=headers,
+        ).raise_for_status()
+        logging.debug(f"Added tag '{SEEDING_TAG_NAME}' to movie ID {movie_id}.")
+    else:
+        requests.delete(
+            f"{MOVIE_API_URL}/{movie_id}/tag/{tag_id}", headers=headers
+        ).raise_for_status()
+        logging.debug(
+            f"Removed tag '{SEEDING_TAG_NAME}' from movie ID {movie_id}."
+        )
 
 
 def process_movies() -> None:

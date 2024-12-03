@@ -103,24 +103,23 @@ def is_tag_set_on_series(series_id: str, tag_id: str) -> bool:
 
 def modify_tag(series_id: str, tag_id: str, add: bool = True) -> None:
     """Add or remove a tag from a series."""
-    # headers = {"X-Api-Key": SONARR_API_KEY}
-    # if add:
-    #     requests.post(
-    #         f"{SERIES_API_URL}/{series_id}/tag",
-    #         json={"tagIds": [tag_id]},
-    #         headers=headers,
-    #     ).raise_for_status()
-    #     logging.info(
-    #         f"Added tag '{SEEDING_TAG_NAME}' to series ID {series_id}."
-    #     )
-    # else:
-    #     requests.delete(
-    #         f"{SERIES_API_URL}/{series_id}/tag/{tag_id}", headers=headers
-    #     ).raise_for_status()
-    #     logging.info(
-    #         f"Removed tag '{SEEDING_TAG_NAME}' from series ID {series_id}."
-    #     )
-    logging.info(f"Called modify_tag for series {series_id}, with add {add}")
+    headers = {"X-Api-Key": SONARR_API_KEY}
+    if add:
+        requests.post(
+            f"{SERIES_API_URL}/{series_id}/tag",
+            json={"tagIds": [tag_id]},
+            headers=headers,
+        ).raise_for_status()
+        logging.debug(
+            f"Added tag '{SEEDING_TAG_NAME}' to series ID {series_id}."
+        )
+    else:
+        requests.delete(
+            f"{SERIES_API_URL}/{series_id}/tag/{tag_id}", headers=headers
+        ).raise_for_status()
+        logging.debug(
+            f"Removed tag '{SEEDING_TAG_NAME}' from series ID {series_id}."
+        )
 
 
 def process_series() -> None:
