@@ -104,22 +104,33 @@ def is_tag_set_on_series(series_id: str, tag_id: str) -> bool:
 def modify_tag(series_id: str, tag_id: str, add: bool = True) -> None:
     """Add or remove a tag from a series."""
     headers = {"X-Api-Key": SONARR_API_KEY}
+
+    # Fetch the current series details
+    response = requests.get(f"{SERIES_API_URL}/{series_id}", headers=headers)
+    response.raise_for_status()
+    series_data = response.json()
+
+    # Update tags
+    tags = set(series_data.get("tags", []))  # Get existing tags as a set
     if add:
-        requests.post(
-            f"{SERIES_API_URL}/{series_id}/tag",
-            json={"tagIds": [tag_id]},
-            headers=headers,
-        ).raise_for_status()
+        tags.add(tag_id)  # Add the tag
         logging.debug(
-            f"Added tag '{SEEDING_TAG_NAME}' to series ID {series_id}."
+            f"Adding tag '{SEEDING_TAG_NAME}' to series ID {series_id}."
         )
     else:
-        requests.delete(
-            f"{SERIES_API_URL}/{series_id}/tag/{tag_id}", headers=headers
-        ).raise_for_status()
+        tags.discard(tag_id)  # Remove the tag if present
         logging.debug(
-            f"Removed tag '{SEEDING_TAG_NAME}' from series ID {series_id}."
+            f"Removing tag '{SEEDING_TAG_NAME}' from series ID {series_id}."
         )
+
+    # Update the series object with the new tags
+    series_data["tags"] = list(tags)
+    response = requests.put(
+        f"{SERIES_API_URL}/{series_id}",
+        json=series_data,
+        headers=headers,
+    )
+    response.raise_for_status()
 
 
 def process_series() -> None:

@@ -92,20 +92,33 @@ def is_tag_set_on_movie(movie_id: str, tag_id: str) -> bool:
 def modify_tag(movie_id: str, tag_id: str, add: bool = True) -> None:
     """Add or remove a tag from a movie."""
     headers = {"X-Api-Key": RADARR_API_KEY}
+
+    # Fetch the current movie details
+    response = requests.get(f"{MOVIE_API_URL}/{movie_id}", headers=headers)
+    response.raise_for_status()
+    movie_data = response.json()
+
+    # Update tags
+    tags = set(movie_data.get("tags", []))  # Get existing tags as a set
     if add:
-        requests.post(
-            f"{MOVIE_API_URL}/{movie_id}/tag",
-            json={"tagIds": [tag_id]},
-            headers=headers,
-        ).raise_for_status()
-        logging.debug(f"Added tag '{SEEDING_TAG_NAME}' to movie ID {movie_id}.")
-    else:
-        requests.delete(
-            f"{MOVIE_API_URL}/{movie_id}/tag/{tag_id}", headers=headers
-        ).raise_for_status()
+        tags.add(tag_id)  # Add the tag
         logging.debug(
-            f"Removed tag '{SEEDING_TAG_NAME}' from movie ID {movie_id}."
+            f"Adding tag '{SEEDING_TAG_NAME}' to movie ID {movie_id}."
         )
+    else:
+        tags.discard(tag_id)  # Remove the tag if present
+        logging.debug(
+            f"Removing tag '{SEEDING_TAG_NAME}' from movie ID {movie_id}."
+        )
+
+    # Update the movie object with new tags
+    movie_data["tags"] = list(tags)
+    response = requests.put(
+        f"{MOVIE_API_URL}/{movie_id}",
+        json=movie_data,
+        headers=headers,
+    )
+    response.raise_for_status()
 
 
 def process_movies() -> None:
