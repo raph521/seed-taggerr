@@ -1,5 +1,5 @@
 ruff==0.11.11
-mypy==1.15.0
+mypy==1.16.0
 types-requests==2.32.0.20250515
 shellcheck-py==0.10.0.1
 hadolint-bin==2.12.0
