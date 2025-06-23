@@ -1,4 +1,4 @@
-ruff==0.11.13
+ruff==0.12.0
 mypy==1.16.0
 types-requests==2.32.4.20250611
 shellcheck-py==0.10.0.1
