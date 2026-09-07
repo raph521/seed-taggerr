@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.15.0rc1-alpine
+FROM python:3.15.0rc2-alpine
 
 # Install required system dependencies
 RUN echo "*** Installing dependencies ***" && \
